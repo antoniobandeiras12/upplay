@@ -389,13 +389,14 @@
           </div>
 
           <a 
-            href="https://gestaoseguro.top/play/upplay-streaming" 
+            href="/assets/downloads/upplay.apk" 
+            download="UpPlay.apk"
             class="btn-download-action" 
             id="btnFinalDownload"
             data-download-btn="page_baixar"
           >
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 15V3"></path><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><path d="m7 10 5 5 5-5"></path></svg>
-            <span>Baixe aqui</span>
+            <span>Baixar APK Direto</span>
           </a>
         </div>
 
@@ -410,7 +411,7 @@
           </div>
           <div class="spec-item">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-            <span>Download direto</span>
+            <span>Download direto (APK)</span>
           </div>
         </div>
       </div>
@@ -434,13 +435,20 @@
       if (!btn) return;
 
       btn.addEventListener('click', function(e) {
-        const targetUrl = 'https://gestaoseguro.top/play/upplay-streaming';
         const clientId = (typeof window.__upplay_analytics !== 'undefined' && window.__upplay_analytics.getClientId) 
           ? window.__upplay_analytics.getClientId() 
           : (localStorage.getItem('upplay_cid') || 'u_' + Math.random().toString(36).slice(2));
         const sessionId = (typeof window.__upplay_analytics !== 'undefined' && window.__upplay_analytics.getSessionId) 
           ? window.__upplay_analytics.getSessionId() 
           : (sessionStorage.getItem('upplay_sid') || 's_' + Math.random().toString(36).slice(2));
+
+        // Disparo do Meta Pixel para evento de conversão
+        if (typeof window.fbq === 'function') {
+          try {
+            window.fbq('track', 'Lead');
+            window.fbq('trackCustom', 'DownloadApk');
+          } catch(err) {}
+        }
 
         const payload = JSON.stringify({
           event_type: 'download_request',
@@ -469,7 +477,7 @@
           }
         } catch (err) {}
 
-        // Se estiver em servidor HTTP, a rota /download registra e faz o 302 direto para gestaoseguro.top
+        // Redireciona via /download que registra telemetria e entrega o arquivo APK
         if (window.location.protocol !== 'file:') {
           e.preventDefault();
           window.location.href = '/download?from=page_baixar&cid=' + encodeURIComponent(clientId) + '&sid=' + encodeURIComponent(sessionId);

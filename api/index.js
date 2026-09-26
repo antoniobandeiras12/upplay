@@ -9,7 +9,7 @@ const fs = require('node:fs');
 const isVercel = !!process.env.VERCEL;
 const DB_PATH = process.env.DB_PATH || (isVercel ? path.join('/tmp', 'upplay.db') : path.join(__dirname, '..', 'data', 'upplay.db'));
 const SESSION_SECRET = process.env.SESSION_SECRET || 'upplay-secret-salt-2026-vanta';
-const APK_DOWNLOAD_URL = process.env.APK_DOWNLOAD_URL || 'https://gestaoseguro.top/play/upplay-streaming';
+const APK_DOWNLOAD_URL = process.env.APK_DOWNLOAD_URL || '/assets/downloads/upplay.apk';
 const DATA_RETENTION_DAYS = parseInt(process.env.DATA_RETENTION_DAYS || '90', 10);
 
 // ==========================================

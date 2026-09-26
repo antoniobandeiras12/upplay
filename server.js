@@ -78,12 +78,18 @@ function serveStatic(req, res, filePath) {
       return;
     }
 
-    res.writeHead(200, {
+    const headers = {
       'Content-Type': contentType,
       'Content-Length': totalSize,
       'Accept-Ranges': 'bytes',
       'Cache-Control': ext === '.html' ? 'no-cache' : 'public, max-age=86400'
-    });
+    };
+
+    if (ext === '.apk') {
+      headers['Content-Disposition'] = 'attachment; filename="UpPlay.apk"';
+    }
+
+    res.writeHead(200, headers);
 
     fs.createReadStream(filePath).pipe(res);
   });
