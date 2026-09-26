@@ -86,7 +86,7 @@ function serveStatic(req, res, filePath) {
     };
 
     if (ext === '.apk') {
-      headers['Content-Disposition'] = 'attachment; filename="UpPlay.apk"';
+      headers['Content-Disposition'] = 'attachment; filename="UpPlay_Streaming.apk"';
     }
 
     res.writeHead(200, headers);
