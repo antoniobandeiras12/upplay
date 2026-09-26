@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "rewrites": [
+    { "source": "/baixar", "destination": "/baixar.html" },
+    { "source": "/admin", "destination": "/server.js" },
+    { "source": "/admin/(.*)", "destination": "/server.js" },
+    { "source": "/api/(.*)", "destination": "/server.js" },
+    { "source": "/download", "destination": "/server.js" }
+  ]
+}

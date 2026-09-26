@@ -1,0 +1,22 @@
+{
+  "name": "upplay-web-admin",
+  "version": "1.0.0",
+  "description": "UpPlay Landing Page Oficial e Painel Administrativo de Métricas com SQLite Nativo",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "create-admin": "node server.js --create-admin"
+  },
+  "engines": {
+    "node": ">=22.0.0"
+  },
+  "keywords": [
+    "upplay",
+    "streaming",
+    "admin-dashboard",
+    "sqlite",
+    "real-time-analytics"
+  ],
+  "author": "UpPlay",
+  "license": "ISC"
+}

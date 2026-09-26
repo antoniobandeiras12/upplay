@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Acesso Administrativo — UpPlay</title>
+  <meta name="robots" content="noindex, nofollow"/>
+  <link rel="icon" type="image/png" href="/assets/images/upplay-logo.png"/>
+  <link rel="stylesheet" href="/admin/admin.css"/>
+</head>
+<body class="login-body">
+
+  <main class="login-card">
+    <div class="login-brand-header">
+      <img src="/assets/images/upplay-logo.png" alt="UpPlay" class="login-logo"/>
+      <div style="margin-bottom: 8px;">
+        <span class="admin-badge">Painel Administrativo</span>
+      </div>
+      <h1 class="login-heading">Autenticação Restrita</h1>
+      <p class="login-subhead">Acesso exclusivo para visualização de métricas e auditoria.</p>
+    </div>
+
+    <div id="errorMessage" class="login-error-banner" role="alert"></div>
+
+    <form id="loginForm" class="login-form">
+      <div class="form-group">
+        <label for="usernameInput" class="form-label">Usuário</label>
+        <input 
+          type="text" 
+          id="usernameInput" 
+          name="username" 
+          class="form-input" 
+          required 
+          autocomplete="username" 
+          autofocus 
+          placeholder="Ex: admin"
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="passwordInput" class="form-label">Senha</label>
+        <input 
+          type="password" 
+          id="passwordInput" 
+          name="password" 
+          class="form-input" 
+          required 
+          autocomplete="current-password" 
+          placeholder="••••••••••••"
+        />
+      </div>
+
+      <button type="submit" id="btnSubmit" class="btn-login-submit">
+        <span id="btnText">Entrar no Painel</span>
+      </button>
+    </form>
+  </main>
+
+  <script>
+    (function() {
+      const form = document.getElementById('loginForm');
+      const errorBanner = document.getElementById('errorMessage');
+      const btnSubmit = document.getElementById('btnSubmit');
+      const btnText = document.getElementById('btnText');
+
+      form.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        errorBanner.style.display = 'none';
+        btnSubmit.disabled = true;
+        btnText.textContent = 'Verificando...';
+
+        const username = document.getElementById('usernameInput').value.trim();
+        const password = document.getElementById('passwordInput').value;
+
+        try {
+          const res = await fetch('/api/auth/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username, password })
+          });
+
+          const data = await res.json();
+
+          if (res.ok && data.ok) {
+            btnText.textContent = 'Redirecionando...';
+            window.location.href = '/admin';
+          } else {
+            errorBanner.textContent = data.error || 'Credenciais inválidas. Verifique usuário e senha.';
+            errorBanner.style.display = 'block';
+            btnSubmit.disabled = false;
+            btnText.textContent = 'Entrar no Painel';
+          }
+        } catch (err) {
+          errorBanner.textContent = 'Erro ao conectar ao servidor. Tente novamente.';
+          errorBanner.style.display = 'block';
+          btnSubmit.disabled = false;
+          btnText.textContent = 'Entrar no Painel';
+        }
+      });
+    })();
+  </script>
+</body>
+</html>

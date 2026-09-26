@@ -1,0 +1,25 @@
+# Dependências e Builds
+node_modules/
+.vercel/
+
+# Banco de dados local
+data/
+*.db
+*.db-journal
+*.db-wal
+
+# Logs e Ambientes Locais
+*.log
+.env
+.env.local
+
+# Arquivos de Sistema
+.DS_Store
+Thumbs.db
+
+# Scripts e Capturas Temporárias de Teste
+*.png
+!assets/images/*.png
+detect_overflow.py
+find_overflow.py
+test_flow.js
