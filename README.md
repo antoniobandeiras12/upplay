@@ -6,7 +6,7 @@ Landing page cinematográfica, página de download integrada e painel administra
 
 - `index.html`: Landing page principal para Android, catálogo de filmes, séries, esportes e instalação.
 - `baixar.html`: Página intermediária de instrução de instalação com vídeo tutorial e botão de download oficial.
-- `dev-server.js`: Servidor Node.js local para telemetria em tempo real, auditoria, autenticação administrativa e rotas controladas.
+- `scripts/dev-server.js`: Servidor Node.js local para telemetria em tempo real, auditoria, autenticação administrativa e rotas controladas.
 - `api/index.js`: Serverless Function para a Vercel com rotas `/api/*` e `/download`.
 - `admin/`: Painel administrativo restrito (`/admin`) com métricas de visitantes ativos (<60s), cliques, solicitações de download e gráficos.
 - `assets/`: Estilos CSS, scripts do rastreador, imagens oficiais e vídeo tutorial de instalação.
@@ -29,7 +29,7 @@ npm start
 
 Para criar um novo administrador ou redefinir senha via linha de comando:
 ```bash
-node dev-server.js --create-admin <usuario> <senha>
+node scripts/dev-server.js --create-admin <usuario> <senha>
 ```
 
 ## Deploy na Vercel
