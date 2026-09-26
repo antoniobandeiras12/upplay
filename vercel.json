@@ -1,10 +1,10 @@
 {
-  "version": 2,
+  "cleanUrls": true,
   "rewrites": [
     { "source": "/baixar", "destination": "/baixar.html" },
-    { "source": "/admin", "destination": "/server.js" },
-    { "source": "/admin/(.*)", "destination": "/server.js" },
-    { "source": "/api/(.*)", "destination": "/server.js" },
-    { "source": "/download", "destination": "/server.js" }
+    { "source": "/admin", "destination": "/admin/index.html" },
+    { "source": "/admin/login", "destination": "/admin/login.html" },
+    { "source": "/download", "destination": "/api/index.js" },
+    { "source": "/api/(.*)", "destination": "/api/index.js" }
   ]
 }
