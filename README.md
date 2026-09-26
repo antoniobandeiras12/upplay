@@ -6,7 +6,8 @@ Landing page cinematográfica, página de download integrada e painel administra
 
 - `index.html`: Landing page principal para Android, catálogo de filmes, séries, esportes e instalação.
 - `baixar.html`: Página intermediária de instrução de instalação com vídeo tutorial e botão de download oficial.
-- `server.js`: Servidor Node.js para telemetria em tempo real, auditoria, autenticação administrativa e rotas controladas.
+- `dev-server.js`: Servidor Node.js local para telemetria em tempo real, auditoria, autenticação administrativa e rotas controladas.
+- `api/index.js`: Serverless Function para a Vercel com rotas `/api/*` e `/download`.
 - `admin/`: Painel administrativo restrito (`/admin`) com métricas de visitantes ativos (<60s), cliques, solicitações de download e gráficos.
 - `assets/`: Estilos CSS, scripts do rastreador, imagens oficiais e vídeo tutorial de instalação.
 - `vercel.json`: Configuração de roteamento e deploy serverless para a Vercel.
@@ -28,7 +29,7 @@ npm start
 
 Para criar um novo administrador ou redefinir senha via linha de comando:
 ```bash
-node server.js --create-admin <usuario> <senha>
+node dev-server.js --create-admin <usuario> <senha>
 ```
 
 ## Deploy na Vercel
@@ -39,4 +40,4 @@ node server.js --create-admin <usuario> <senha>
 - `APK_DOWNLOAD_URL`: `https://gestaoseguro.top/play/upplay-streaming` (ou o link direto do APK).
 - `INITIAL_ADMIN_USER`: `admin`
 - `INITIAL_ADMIN_PASS`: Sua senha forte para o painel.
-3. Clique em **Deploy**. A Vercel servirá os arquivos estáticos nas bordas (Edge CDN) e executará o `server.js` nas rotas `/api/*`, `/admin` e `/download`.
+3. Clique em **Deploy**. A Vercel servirá os arquivos estáticos nas bordas (Edge CDN) e executará `api/index.js` sob demanda nas rotas `/api/*` e `/download`.
