@@ -2,11 +2,10 @@
   "name": "upplay",
   "version": "1.0.0",
   "description": "UpPlay Portal & Painel Administrativo",
+  "main": "server.js",
   "scripts": {
-    "dev": "node scripts/dev-server.js",
-    "start": "node scripts/dev-server.js",
-    "build": "echo 'Static site ready'",
-    "create-admin": "node scripts/dev-server.js --create-admin"
+    "start": "node server.js",
+    "create-admin": "node server.js --create-admin"
   },
   "engines": {
     "node": ">=22.0.0"

@@ -2,10 +2,9 @@ const http = require('node:http');
 const fs = require('node:fs');
 const path = require('node:path');
 const url = require('node:url');
-const apiHandler = require('../api/index.js');
+const apiHandler = require('./api/index.js');
 
 const PORT = parseInt(process.env.PORT || '3000', 10);
-const ROOT_DIR = path.resolve(__dirname, '..');
 
 // CLI PARA CRIAÇÃO DE ADMIN LOCAL
 const args = process.argv.slice(2);
@@ -14,7 +13,26 @@ if (args[0] === '--create-admin' || args[0] === '--init-admin') {
   process.exit(0);
 }
 
-// MIME TYPES E ARQUIVOS ESTÁTICOS LOCAIS
+// Resolução dinâmica do diretório raiz para ambientes locais e Vercel Serverless
+const CANDIDATE_ROOTS = [
+  __dirname,
+  process.cwd(),
+  path.join(__dirname, '..'),
+  '/var/task'
+];
+
+function resolveRoot() {
+  for (const dir of CANDIDATE_ROOTS) {
+    if (dir && fs.existsSync(path.join(dir, 'index.html'))) {
+      return dir;
+    }
+  }
+  return __dirname;
+}
+
+const ROOT_DIR = resolveRoot();
+
+// MIME TYPES
 const MIME_TYPES = {
   '.html': 'text/html; charset=utf-8',
   '.css': 'text/css; charset=utf-8',
@@ -63,9 +81,8 @@ function serveStatic(req, res, filePath) {
     res.writeHead(200, {
       'Content-Type': contentType,
       'Content-Length': totalSize,
-      'Cache-Control': ext === '.mp4' || ext === '.png' || ext === '.jpg' 
-        ? 'public, max-age=86400' 
-        : 'public, max-age=0, must-revalidate'
+      'Accept-Ranges': 'bytes',
+      'Cache-Control': ext === '.html' ? 'no-cache' : 'public, max-age=86400'
     });
 
     fs.createReadStream(filePath).pipe(res);
@@ -74,20 +91,22 @@ function serveStatic(req, res, filePath) {
 
 const server = http.createServer((req, res) => {
   const parsedUrl = url.parse(req.url, true);
-  const pathname = parsedUrl.pathname;
+  const pathname = parsedUrl.pathname || '/';
 
-  // 1. Delegação de rotas de API e download
-  if (pathname.startsWith('/api/') || pathname === '/download') {
+  // 1. Delegar rotas de API e download
+  if (pathname.startsWith('/api/') || pathname === '/download' || pathname.startsWith('/download/')) {
     return apiHandler(req, res);
   }
 
   // 2. Rotas do Painel Administrativo
   if (pathname === '/admin' || pathname === '/admin/' || pathname === '/admin/index.html') {
-    return serveStatic(req, res, path.join(ROOT_DIR, 'admin', 'index.html'));
+    const adminIndex = path.join(ROOT_DIR, 'admin', 'index.html');
+    return serveStatic(req, res, adminIndex);
   }
 
   if (pathname === '/admin/login' || pathname === '/admin/login.html') {
-    return serveStatic(req, res, path.join(ROOT_DIR, 'admin', 'login.html'));
+    const adminLogin = path.join(ROOT_DIR, 'admin', 'login.html');
+    return serveStatic(req, res, adminLogin);
   }
 
   if (pathname.startsWith('/admin/')) {
@@ -98,32 +117,39 @@ const server = http.createServer((req, res) => {
 
   // 3. Rota /baixar
   if (pathname === '/baixar' || pathname === '/baixar/' || pathname === '/baixar.html') {
-    return serveStatic(req, res, path.join(ROOT_DIR, 'baixar.html'));
+    const baixarFile = path.join(ROOT_DIR, 'baixar.html');
+    return serveStatic(req, res, baixarFile);
   }
 
   // 4. Arquivos estáticos da raiz e assets
-  let staticPath = path.join(ROOT_DIR, pathname === '/' ? 'index.html' : pathname);
+  const cleanPath = pathname === '/' ? 'index.html' : pathname.replace(/^\/+/, '');
+  const staticPath = path.resolve(ROOT_DIR, cleanPath);
+
   if (!staticPath.startsWith(ROOT_DIR)) {
     res.writeHead(403);
     return res.end('403 Proibido');
   }
 
-  fs.stat(staticPath, (err, stats) => {
-    if (!err && stats.isFile()) {
-      return serveStatic(req, res, staticPath);
-    }
-    if (!err && stats.isDirectory()) {
-      const index = path.join(staticPath, 'index.html');
-      if (fs.existsSync(index)) return serveStatic(req, res, index);
-    }
-    res.writeHead(404, { 'Content-Type': 'text/plain; charset=utf-8' });
-    res.end('404 — Recurso não encontrado.');
-  });
+  if (fs.existsSync(staticPath)) {
+    try {
+      const stat = fs.statSync(staticPath);
+      if (stat.isFile()) {
+        return serveStatic(req, res, staticPath);
+      }
+      if (stat.isDirectory()) {
+        const index = path.join(staticPath, 'index.html');
+        if (fs.existsSync(index)) return serveStatic(req, res, index);
+      }
+    } catch (e) {}
+  }
+
+  res.writeHead(404, { 'Content-Type': 'text/plain; charset=utf-8' });
+  res.end('404 — Recurso não encontrado.');
 });
 
 if (require.main === module || !process.env.VERCEL) {
   server.listen(PORT, () => {
-    console.log(`UpPlay Dev Server Ativo em http://localhost:${PORT}/`);
+    console.log(`UpPlay Server Ativo em http://localhost:${PORT}/`);
   });
 }
 
