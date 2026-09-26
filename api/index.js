@@ -240,7 +240,11 @@ const recentDownloads = new Map();
 // ==========================================
 module.exports = async function handler(req, res) {
   const parsedUrl = url.parse(req.url, true);
-  const pathname = parsedUrl.pathname || '/';
+  const originalPath = req.headers['x-matched-path'] || req.headers['x-invoke-path'] || req.headers['x-vercel-original-path'];
+  let pathname = parsedUrl.pathname || '/';
+  if ((pathname === '/api/index.js' || pathname === '/api' || pathname === '/api/') && originalPath) {
+    pathname = originalPath;
+  }
   const method = req.method ? req.method.toUpperCase() : 'GET';
   const clientIp = getClientIp(req);
   const userAgent = req.headers['user-agent'] || '';
