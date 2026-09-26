@@ -185,6 +185,13 @@
           utm_campaign: traffic.utm_campaign,
           dedup_token: dedupToken
         });
+
+        // Dispara evento de conversão no Meta Pixel se ativo
+        try {
+          if (typeof window.fbq === 'function') {
+            window.fbq('trackCustom', 'DownloadClick', { button_location: location });
+          }
+        } catch (e) {}
       });
     });
   }
