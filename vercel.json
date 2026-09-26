@@ -1,18 +1,7 @@
 {
-  "cleanUrls": true,
-  "rewrites": [
-    { "source": "/baixar", "destination": "/baixar.html" },
-    { "source": "/admin", "destination": "/admin/index.html" },
-    { "source": "/admin/login", "destination": "/admin/login.html" },
-    { "source": "/download", "destination": "/api/index.js" },
-    { "source": "/api/(.*)", "destination": "/api/index.js" }
-  ],
   "functions": {
     "server.js": {
       "includeFiles": "{index.html,baixar.html,admin/**,assets/**}"
-    },
-    "api/**/*.js": {
-      "includeFiles": "data/**"
     }
   }
 }
